@@ -24,6 +24,7 @@ parser.add_argument('--local_rank', default=0,  help='if use distributed mode, m
 parser.add_argument('--model',      default="LPNet", help='decise which data to choose')
 args = parser.parse_args()
 
+
 def main():
     '''  initial distributed mode  '''
     rank = initial_distributed()

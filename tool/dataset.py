@@ -26,7 +26,7 @@ def readfile(file_path):
 
 
 class LPNet_Dataset(Dataset):
-    def __init__(self, file_path, model="BPNet", ps=256):
+    def __init__(self, file_path, model="LPNet", ps=256):
         super().__init__()
         self.ps = ps
         self.model = model
@@ -118,7 +118,9 @@ class CustomDataset(Dataset):
 class TestUDocNet(Dataset):
     def __init__(self, file_path):
         super().__init__()
-        self.file_path = os.path.join(file_path, "rec_img_bench")
+        # self.file_path = os.path.join(file_path, "rec_img_bench")
+        # self.file_path = os.path.join(file_path, "Dewarpnet")
+        self.file_path = os.path.join("/data4/wangyh/doc/wyh/DocScanner_L")
         self.img_list = sorted(os.listdir(self.file_path))
 
         self.transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=(0.5,), std=(0.5,)),])

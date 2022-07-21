@@ -27,7 +27,7 @@ def weights_init(init_type="gaussian"):
     return init_fun
 
 
-'''  Background Enhanced Net  '''
+'''  Light Prediction Network  '''
 class LPNet(nn.Module):
     def __init__(self, in_channels=3, out_channels=3):
         super(LPNet, self).__init__()

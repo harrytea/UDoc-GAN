@@ -1,13 +1,15 @@
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 import torch
+import logging
 import argparse
 from tqdm import tqdm
 from tool.utils import *
 from itertools import chain
+from tool.logger import get_root_logger
 from tool.dataset import CustomDataset
 from tool.model import LPNet, Generator3, Generator6, Discriminator
 
@@ -20,7 +22,7 @@ parser.add_argument('--beta1',          default=0.5,    type=float,  help='momen
 parser.add_argument('--lr',             default=0.0002, type=float,  help='initial learning rate for adam')
 parser.add_argument('--epoch_count',    default=1,      type=int,    help='the starting epoch count')
 parser.add_argument('--n_epochs',       default=100,    type=int,    help='number of epochs with the initial learning rate')
-parser.add_argument('--n_epochs_decay', default=200,    type=int,    help='number of epochs to linearly decay learning rate to zero')
+parser.add_argument('--n_epochs_decay', default=500,    type=int,    help='number of epochs to linearly decay learning rate to zero')
 '''  param  '''
 parser.add_argument('--input_nc',       default=6,      type=int,    help='input image channels: 3-Document 3-background')
 parser.add_argument('--output_nc',      default=3,      type=int,    help='output image channels: 3-Document')
@@ -41,9 +43,10 @@ args = parser.parse_args()
 def main():
     '''  1. initial distributed mode  '''
     rank = initial_distributed()
+    logger = get_root_logger(name='GAN', log_file=os.path.join(args.ckpt_dir, "train.log"), log_level=logging.INFO)
 
 
-    '''  2. wandb logger  '''
+    '''  2. logger  '''
     if not os.path.exists(args.ckpt_dir):
         os.makedirs(args.ckpt_dir)
 
@@ -54,7 +57,7 @@ def main():
     train_batch_sampler = torch.utils.data.BatchSampler(train_sampler, batch_size=args.batch_size, drop_last=True)
     train_loader        = torch.utils.data.DataLoader(dataset=train_dataset, batch_sampler=train_batch_sampler, num_workers=8, pin_memory=False)
     if rank==0:
-        print('Number of training data: %d' % len(train_dataset))
+        logger.info('Number of training data: {}'.format(len(train_dataset)))
 
 
     '''  4. initial model  '''
@@ -75,8 +78,8 @@ def main():
     netD_A = torch.nn.parallel.DistributedDataParallel(netD_A, device_ids=[rank], broadcast_buffers=False)
     netD_B = torch.nn.parallel.DistributedDataParallel(netD_B, device_ids=[rank], broadcast_buffers=False)
     if rank==0:
-        print("netG parameters: ", sum(param.numel() for param in netG_A.parameters())/1e6)
-        print("netD parameters: ", sum(param.numel() for param in netD_A.parameters())/1e6)
+        logger.info("netG parameters: {}".format(sum(param.numel() for param in netG_A.parameters())/1e6))
+        logger.info("netD parameters: {}".format(sum(param.numel() for param in netD_A.parameters())/1e6))
 
 
     '''  5. optimizer loss scheduler  '''
@@ -107,7 +110,7 @@ def main():
 
         '''  log learning rate  '''
         if rank==0:
-            print("epoch: %d lr_G: %.4f lr_D: %.4f" % (epoch, optimizer_G.param_groups[0]["lr"], optimizer_D.param_groups[0]["lr"]))
+            logger.info("epoch: {} lr_G: {} lr_D: {}".format(epoch, optimizer_G.param_groups[0]["lr"], optimizer_D.param_groups[0]["lr"]))
 
         loss_G_all = 0
         loss_D_all = 0
@@ -175,10 +178,10 @@ def main():
             loss_D_all = loss_D_all+loss_D.item()
 
         if rank==0:
-            print("epoch:{} G_loss:{:.5f} D_loss:{:.5f}".format(epoch, loss_G_all, loss_D_all))
+            logger.info("epoch:{} G_loss:{:.5f} D_loss:{:.5f}".format(epoch, loss_G_all, loss_D_all))
 
         '''   log model   '''
-        if rank==0 and epoch%5==0:
+        if rank==0 and epoch%1==0:
             torch.save(netG_A.state_dict(), os.path.join(args.ckpt_dir, 'epoch{}_netG_A.pth'.format(epoch)))
             # torch.save(netG_B.state_dict(), os.path.join(args.ckpt_dir, 'epoch{}_netG_B.pth'.format(epoch)))
             # torch.save(netD_A.state_dict(), os.path.join(args.ckpt_dir, 'epoch{}_netD_A.pth'.format(epoch)))
