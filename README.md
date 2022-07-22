@@ -68,7 +68,7 @@ doctr: [model](https://pan.baidu.com/s/1wdvyXEUWnZvFBkuGZwP2PQ) [results](https:
 
 dewarpnet: [model](https://pan.baidu.com/s/1hQFeAs-cDmwbw2qMBE09Dg) [results](https://pan.baidu.com/s/1dlbE_yo94_AlvavPf00fjQ) Code: `df98`
 
-|           | Paper(ED/CER) | Pre-Train(ED/CER) |
+|           | Paper(ED/CER) | latest(ED/CER) |
 | --------- | ------------- | ----------------- |
 | DocTr     | 396.17/0.12   | 406.76/0.13       |
 | DewarpNet | 558.61/0.18   | 558.11/0.18       |
