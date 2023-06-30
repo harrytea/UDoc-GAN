@@ -80,4 +80,12 @@ original paper results: [doctr](https://pan.baidu.com/s/1rgweBKhvUrRKQeX6uJg3TA)
 
 ## Citations
 
-coming soon
+```
+@inproceedings{wang2022udoc,
+  title={UDoc-GAN: Unpaired Document Illumination Correction with Background Light Prior},
+  author={Wang, Yonghui and Zhou, Wengang and Lu, Zhenbo and Li, Houqiang},
+  booktitle={Proceedings of the 30th ACM International Conference on Multimedia},
+  pages={5074--5082},
+  year={2022}
+}
+```
