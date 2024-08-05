@@ -16,7 +16,7 @@
 
 Original DocProj Datasets has either geometric correction or illumination correction. [Original DocProj](https://github.com/xiaoyu258/DocProj) (You do not need to download this dataset.)
 
-For LPNet, it is trained on the DocProj Datasets which has been geometrically corrected and cropped into uniform illumination patches. You can download the datasets directly from [Baidu Disk](https://pan.baidu.com/s/1LOjGd1BP2_8a0p4b4N_aLQ) Code: `df98`
+For LPNet, it is trained on the DocProj Datasets which has been geometrically corrected and cropped into uniform illumination patches. You can download the datasets directly from [Baidu Disk](https://pan.baidu.com/s/1xOPUzC1Q7FwUgUe8TPZFvg) Code: `df98`
 
 For UDoc-GAN, it is trained on the DocProj Datasets which has been geometrically corrected. You can download the datasets directly from [Baidu Disk](https://pan.baidu.com/s/1XNO0M-Xb2LN5s-raUGS0Ig) Code: `df98`
 
